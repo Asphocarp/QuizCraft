@@ -3,7 +3,7 @@
 
 - [ ] 1 阻挡声音; fix shield blocking cause it to not even knockback
 - [ ] 1 add channel for ping (default channel string is "default") (only forward pings to this channel (teammates subscript to this channel))
-- [ ] 0 publish to modrinth
+- [ ] 0 screenshot, polish doc, publish to modrinth
 
 - [ ] 1 screen border indicator, with margin?
 - [ ] 2 more dramatic effect for wrong answer, the mob become huge?
