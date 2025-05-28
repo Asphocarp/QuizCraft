@@ -1,0 +1,47 @@
+{
+	"schemaVersion": 1,
+	"id": "quiz_craft",
+	"version": "${version}",
+	"name": "QuizCraft",
+	"description": "Make MC Apex Again!",
+	"authors": [
+		"Asphocarp"
+	],
+	"contact": {
+		"homepage": "https://github.com/Asphocarp/QuizCraft",
+		"sources": "https://github.com/Asphocarp/QuizCraft"
+	},
+	"license": "CC0-1.0",
+	"icon": "assets/quiz_craft/icon.png",
+	"environment": "*",
+	"entrypoints": {
+		"main": [
+			"app.jyu.QuizCraft"
+		],
+		"client": [
+			"app.jyu.QuizCraftClient"
+		],
+		"modmenu": [
+			"app.jyu.ModConfig"
+		]
+	},
+	"mixins": [
+		"quiz_craft.mixins.json",
+		{
+			"config": "quiz_craft.client.mixins.json",
+			"environment": "client"
+		}
+	],
+	"depends": {
+		"fabricloader": ">=0.14.21",
+		"minecraft": "~1.20.1",
+		"java": ">=17",
+		"fabric-api": "*"
+	},
+	"suggests": {
+	},
+	"recommends":{
+		"modmenu": "*",
+		"cloth-config": "*"
+	}
+}
