@@ -22,5 +22,71 @@
     "sounds": [
       "quiz_craft:mozambique_lifeline"
     ]
+  },
+  "wingman": {
+    "subtitle": "subtitles.quiz_craft.wingman",
+    "sounds": [
+      "quiz_craft:wingman"
+    ]
+  },
+  "you_tried": {
+    "subtitle": "subtitles.quiz_craft.you_tried",
+    "sounds": [
+      "quiz_craft:you_tried"
+    ]
+  },
+  "shield_break_1": {
+    "subtitle": "subtitles.quiz_craft.shield_break_1",
+    "sounds": [
+      "quiz_craft:shield_break_1"
+    ]
+  },
+  "shield_break_2": {
+    "subtitle": "subtitles.quiz_craft.shield_break_2",
+    "sounds": [
+      "quiz_craft:shield_break_2"
+    ]
+  },
+  "vine_boom": {
+    "subtitle": "subtitles.quiz_craft.vine_boom",
+    "sounds": [
+      "quiz_craft:vine_boom"
+    ]
+  },
+  "erro": {
+    "subtitle": "subtitles.quiz_craft.erro",
+    "sounds": [
+      "quiz_craft:erro"
+    ]
+  },
+  "mirage_sound": {
+    "subtitle": "subtitles.quiz_craft.mirage_sound",
+    "sounds": [
+      "quiz_craft:miragesound"
+    ]
+  },
+  "apex_legends_2019": {
+    "subtitle": "subtitles.quiz_craft.apex_legends_2019",
+    "sounds": [
+      "quiz_craft:apex_legends_2019"
+    ]
+  },
+  "apex_legends_knockdown": {
+    "subtitle": "subtitles.quiz_craft.apex_legends_knockdown",
+    "sounds": [
+      "quiz_craft:apex_legends_knockdown"
+    ]
+  },
+  "apex_legends_kraber": {
+    "subtitle": "subtitles.quiz_craft.apex_legends_kraber",
+    "sounds": [
+      "quiz_craft:apex_legends_kraber"
+    ]
+  },
+  "apex_jump": {
+    "subtitle": "subtitles.quiz_craft.apex_jump",
+    "sounds": [
+      "quiz_craft:apex_jump"
+    ]
   }
 }

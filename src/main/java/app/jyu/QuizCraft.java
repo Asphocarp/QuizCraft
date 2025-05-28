@@ -47,6 +47,7 @@ import net.fabricmc.fabric.api.event.player.PlayerBlockBreakEvents;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Objects;
+import java.util.Random;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.Map;
@@ -111,6 +112,8 @@ public class QuizCraft implements ModInitializer {
     public static final long GLOW_DURATION_MS = 5000; // 5 seconds in milliseconds
     // Map to store UUIDs of glowing entities and their glow end time (System.currentTimeMillis())
     private static final Map<UUID, Long> glowingEntities = new ConcurrentHashMap<>();
+    // random generator
+    private static final Random rg = new Random();
     
     // Constants for block break pings
     public static final java.awt.Color BLOCK_BREAK_PING_COLOR = new java.awt.Color(0xEB9D39);
@@ -138,10 +141,21 @@ public class QuizCraft implements ModInitializer {
     private static final Map<UUID, PingPoint> activePings = new ConcurrentHashMap<>();
 
     public static String[] newSounds = {
-            "quiz_craft:ping_location",
-            "quiz_craft:ping_item",
-            "quiz_craft:ping_enemy",
-            "quiz_craft:mozambique_lifeline",
+        "ping_location",
+        "ping_item",
+        "ping_enemy",
+        "mozambique_lifeline",
+        "wingman",
+        "you_tried",
+        "shield_break_1",
+        "shield_break_2",
+        "vine_boom",
+        "erro",
+        "mirage_sound",
+        "apex_legends_2019",
+        "apex_legends_knockdown",
+        "apex_legends_kraber",
+        "apex_jump"
     };
     // currently include newSounds and SoundEvents.BLOCK_ANVIL_BREAK
     public static ArrayList<SoundEvent> soundEventsForPing;
@@ -160,7 +174,7 @@ public class QuizCraft implements ModInitializer {
         // register all new sound events
         soundEventsForPing = new ArrayList<>();
         Arrays.stream(newSounds).forEach((soundStr) -> {
-            Identifier soundId = new Identifier(soundStr);
+            Identifier soundId = new Identifier(MOD_ID, soundStr);
             SoundEvent soundEvent = SoundEvent.of(soundId);
             Registry.register(Registries.SOUND_EVENT, soundId, soundEvent);
             soundEventsForPing.add(soundEvent);
@@ -346,6 +360,16 @@ public class QuizCraft implements ModInitializer {
             return soundEventsForPing.get(0);
         }
     }
+    
+    // TODO: 0 optimize via deprecate soundIdxToEvent, all use simply sound_name; and use a hashmap
+    private static SoundEvent soundNameToEvent(String soundName) {
+        var soundIdx = Arrays.asList(newSounds).indexOf(soundName);
+        if (soundIdx == -1) {
+            LOGGER.warn("sound name %s not found, using the first one".formatted(soundName));
+            return soundEventsForPing.get(0);
+        }
+        return soundEventsForPing.get(soundIdx);
+    }
 
     public static void removePingAndMulticast(ServerPlayerEntity sender, PingPoint ping) {
         // TODO: support ping channel (for teams)
@@ -514,10 +538,10 @@ public class QuizCraft implements ModInitializer {
         
         // Execute blocked entity damage if it matches this ping ID
         BlockedEntityAttackEvent aEvent = blockedEntityAttacks.remove(ping.id);
-        if (aEvent != null) {
+        if (aEvent != null && aEvent.entity instanceof LivingEntity livingEntity && aEvent.player instanceof ServerPlayerEntity serverPlayer) {
             if (isCorrect) {
                 // Reward: Resume damage and give player Strength I for 6 seconds
-                if (aEvent.entity.isAlive() && aEvent.entity instanceof LivingEntity livingEntity) {
+                if (livingEntity.isAlive()) {
                     // Apply the original damage
                     DamageSource newDamageSource;
                     if (aEvent.player != null && aEvent.player.isAlive()) {
@@ -534,24 +558,22 @@ public class QuizCraft implements ModInitializer {
                     } finally {
                         IS_APPLYING_BLOCKED_DAMAGE.set(false);
                     }
-                    // TODO: add shield broken sound here
                     
-                    // Give player Strength I for 6 seconds (120 ticks)
-                    if (aEvent.player instanceof ServerPlayerEntity serverPlayer) {
-                        serverPlayer.addStatusEffect(new net.minecraft.entity.effect.StatusEffectInstance(
-                            net.minecraft.entity.effect.StatusEffects.STRENGTH, 120, 0));
-                        serverPlayer.sendMessage(net.minecraft.text.Text.literal("§a✓ Correct! You gained Strength for 6 seconds!"), false);
-                        serverPlayer.sendMessage(net.minecraft.text.Text.literal("§a   Your answer was: §e" + correctPair), false);
-                    }
+                    // >> reward: Give player Strength I for 6 seconds (120 ticks)
+                    // play sound random from shield_break_1/2
+                    serverPlayer.playSound(soundNameToEvent("shield_break_" + rg.nextInt(2)), SoundCategory.BLOCKS, 1f, 1f);
+                    serverPlayer.addStatusEffect(new net.minecraft.entity.effect.StatusEffectInstance(
+                        net.minecraft.entity.effect.StatusEffects.STRENGTH, 120, 0));
+                    serverPlayer.sendMessage(net.minecraft.text.Text.literal("§a✓ Correct! You gained Strength for 6 seconds!"), false);
+                    serverPlayer.sendMessage(net.minecraft.text.Text.literal("§a   Your answer was: §e" + correctPair), false);
                 }
                 LOGGER.info("Executed blocked entity damage with reward for ping ID: " + ping.id + " (player: " + aEvent.player.getEntityName() + ", damage: " + aEvent.damageAmount + ")");
             } else {
                 // Penalty: Cancel damage and deal 5 true damage to player
-                if (aEvent.player instanceof ServerPlayerEntity serverPlayer) {
-                    serverPlayer.damage(serverPlayer.getDamageSources().generic(), 5.0f);
-                    serverPlayer.sendMessage(net.minecraft.text.Text.literal("§c✗ Wrong answer! You took 5 damage."), false);
-                    serverPlayer.sendMessage(net.minecraft.text.Text.literal("§c   Correct answer was: §e" + correctPair), false);
-                }
+                serverPlayer.playSound(soundNameToEvent("mirage_sound"), SoundCategory.BLOCKS, 1f, 1f);
+                serverPlayer.damage(serverPlayer.getDamageSources().generic(), 5.0f);
+                serverPlayer.sendMessage(net.minecraft.text.Text.literal("§c✗ Wrong answer! You took 5 damage."), false);
+                serverPlayer.sendMessage(net.minecraft.text.Text.literal("§c   Correct answer was: §e" + correctPair), false);
                 LOGGER.info("Applied entity damage penalty for ping ID: " + ping.id + " (player: " + aEvent.player.getEntityName() + ")");
             }
             blockingEntityToPingId.remove(aEvent.entity.getUuid());
@@ -559,12 +581,14 @@ public class QuizCraft implements ModInitializer {
         
         // Execute blocked block break if it matches this ping ID
         BlockedBlockBreakEvent bEvent = blockedBlockBreaks.remove(ping.id);
-        if (bEvent != null) {
+        if (bEvent != null && bEvent.player instanceof ServerPlayerEntity serverPlayer) {
             if (isCorrect) {
                 // Reward: Resume break and 25% chance for double drop
                 if (bEvent.world.getBlockState(bEvent.pos).equals(bEvent.state)) {
                     bEvent.world.breakBlock(bEvent.pos, true, bEvent.player);
-                    
+
+                    // serverPlayer.playSound(soundNameToEvent("wingman"), SoundCategory.BLOCKS, 1f, 1f);
+
                     // 25% chance for extra break (double drop)
                     if (Math.random() < 0.25) {
                         // Simulate another break by dropping items again
@@ -572,15 +596,11 @@ public class QuizCraft implements ModInitializer {
                         for (net.minecraft.item.ItemStack stack : drops) {
                             net.minecraft.block.Block.dropStack(bEvent.world, bEvent.pos, stack);
                         }
-                        if (bEvent.player instanceof ServerPlayerEntity serverPlayer) {
-                            serverPlayer.sendMessage(net.minecraft.text.Text.literal("§a✓ Correct! Lucky! You got double drops!"), false);
-                            serverPlayer.sendMessage(net.minecraft.text.Text.literal("§a   Your answer was: §e" + correctPair), false);
-                        }
+                        serverPlayer.sendMessage(net.minecraft.text.Text.literal("§a✓ Correct! Lucky! You got double drops!"), false);
+                        serverPlayer.sendMessage(net.minecraft.text.Text.literal("§a   Your answer was: §e" + correctPair), false);
                     } else {
-                        if (bEvent.player instanceof ServerPlayerEntity serverPlayer) {
-                            serverPlayer.sendMessage(net.minecraft.text.Text.literal("§a✓ Correct! Block broken successfully!"), false);
-                            serverPlayer.sendMessage(net.minecraft.text.Text.literal("§a   Your answer was: §e" + correctPair), false);
-                        }
+                        serverPlayer.sendMessage(net.minecraft.text.Text.literal("§a✓ Correct! Block broken successfully!"), false);
+                        serverPlayer.sendMessage(net.minecraft.text.Text.literal("§a   Your answer was: §e" + correctPair), false);
                     }
                 }
                 LOGGER.info("Executed blocked block break with reward for ping ID: " + ping.id + " (player: " + bEvent.player.getEntityName() + ")");
@@ -589,18 +609,17 @@ public class QuizCraft implements ModInitializer {
                 if (bEvent.world.getBlockState(bEvent.pos).equals(bEvent.state)) {
                     // Break block without drops
                     bEvent.world.breakBlock(bEvent.pos, false, bEvent.player);
+                    serverPlayer.playSound(soundNameToEvent("vine_boom"), SoundCategory.BLOCKS, 1f, 1f);
                     
                     // Destroy iron pickaxe or lower
-                    if (bEvent.player instanceof ServerPlayerEntity serverPlayer) {
-                        net.minecraft.item.ItemStack mainHand = serverPlayer.getMainHandStack();
-                        if (isPickaxeIronOrLower(mainHand)) {
-                            mainHand.setCount(0); // Destroy the tool
-                            serverPlayer.sendMessage(net.minecraft.text.Text.literal("§c✗ Wrong answer! Your pickaxe broke and no drops!"), false);
-                            serverPlayer.sendMessage(net.minecraft.text.Text.literal("§c   Correct answer was: §e" + correctPair), false);
-                        } else {
-                            serverPlayer.sendMessage(net.minecraft.text.Text.literal("§c✗ Wrong answer! No drops!"), false);
-                            serverPlayer.sendMessage(net.minecraft.text.Text.literal("§c   Correct answer was: §e" + correctPair), false);
-                        }
+                    net.minecraft.item.ItemStack mainHand = serverPlayer.getMainHandStack();
+                    if (isPickaxeIronOrLower(mainHand)) {
+                        mainHand.setCount(0); // Destroy the tool
+                        serverPlayer.sendMessage(net.minecraft.text.Text.literal("§c✗ Wrong answer! Your pickaxe broke and no drops!"), false);
+                        serverPlayer.sendMessage(net.minecraft.text.Text.literal("§c   Correct answer was: §e" + correctPair), false);
+                    } else {
+                        serverPlayer.sendMessage(net.minecraft.text.Text.literal("§c✗ Wrong answer! No drops!"), false);
+                        serverPlayer.sendMessage(net.minecraft.text.Text.literal("§c   Correct answer was: §e" + correctPair), false);
                     }
                 }
                 LOGGER.info("Applied block break penalty for ping ID: " + ping.id + " (player: " + bEvent.player.getEntityName() + ")");

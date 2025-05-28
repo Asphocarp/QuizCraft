@@ -1,4 +1,3 @@
-- [ ] 0 great icon, description
 - [ ] 0 碎甲声音
 
 - [ ] 1 阻挡声音; fix shield blocking cause it to not even knockback
@@ -15,6 +14,7 @@
 
 - [ ] 2 可以允许暂停(单人), config里设置(就通过弹出GUI?)
 - [ ] 2 可能只hook on death比较合理，甚至可以让他复活得更强
+- [ ] 2 polish mod config page: dropdown selection for sounds, color picker for highlight color
 
 drama:
 - support PvP!!!
