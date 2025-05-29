@@ -7,6 +7,7 @@ import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.minecraft.network.PacketByteBuf;
+import net.minecraft.particle.ParticleTypes;
 import net.minecraft.server.network.ServerPlayNetworkHandler;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
@@ -37,6 +38,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
+import net.minecraft.entity.AreaEffectCloudEntity;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.server.MinecraftServer;
@@ -561,6 +563,15 @@ public class QuizCraft implements ModInitializer {
                     // >> reward: Give player Strength I for 6 seconds (120 ticks)
                     // play sound shield_break
                     serverPlayer.playSound(soundNameToEvent("shield_break"), SoundCategory.BLOCKS, 1f, 1f);
+                    // visual effect: show sonic boom
+                    if (livingEntity.getWorld() instanceof ServerWorld serverWorld){
+                        serverWorld.spawnParticles(
+                            ParticleTypes.SONIC_BOOM, // Placeholder particle
+                            livingEntity.getX(), livingEntity.getBodyY(0.5), livingEntity.getZ(),
+                            1, // count
+                            0.0, 0.0, 0.0, // dx, dy, dz (velocity/spread)
+                            0.0); // speed
+                    }
                     // if livingEntity died, play "apex_legends_knockdown"
                     if (!livingEntity.isAlive()) {
                         serverPlayer.playSound(soundNameToEvent("apex_legends_knockdown"), SoundCategory.BLOCKS, 1f, 1f);
