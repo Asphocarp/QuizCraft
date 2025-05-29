@@ -103,12 +103,13 @@ public class RenderHandler {
     }
 
     public void onRenderGameOverlayPost(DrawContext drawContext, float tickDelta) {
+        final var thresholdRatio = 0.25; // TODO: add config for this
         MinecraftClient client = MinecraftClient.getInstance();
         int width = client.getWindow().getScaledWidth();
         int height = client.getWindow().getScaledHeight();
         double halfWidth = width / 2.0;
         double halfHeight = height / 2.0;
-        double threshold = Math.min(width, height) / 5.0; // used to be 25, TODO: add config for this
+        double threshold = Math.min(width, height) * thresholdRatio;
         double thresholdSquared = threshold * threshold;
         
         // Track the nearest ping to screen center
