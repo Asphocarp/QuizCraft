@@ -132,16 +132,18 @@ public class QuizCraft implements ModInitializer {
     public static final ThreadLocal<Float> CURRENT_DAMAGE_AMOUNT = ThreadLocal.withInitial(() -> 0.0f);
     
     // Storage for blocked events waiting for ping cancellation
-    // Entity ID -> Ping ID // TODO: to optimize (one or many ping per entity)
-    public static final Map<UUID, UUID> blockingEntityToPingId = new ConcurrentHashMap<>();
+    // Ping ID -> PingPoint: active pings for answer processing
+    private static final Map<UUID, PingPoint> activePings = new ConcurrentHashMap<>();
+    // Entity ID -> Ping ID 
+    private static final Map<UUID, UUID> blockingEntityToPingId = new ConcurrentHashMap<>();
+    // Block Pos -> Ping ID
+    private static final Map<BlockPos, UUID> blockingBlockPosToPingId = new ConcurrentHashMap<>();
+
+    // TODO: optimize: store blocked_event_id into ping data (so that remove 2 maps of PingID->Event); but add a set of blocked_events
     // Ping ID -> BlockedEntityAttackEvent
     private static final Map<UUID, BlockedEntityAttackEvent> blockedEntityAttacks = new ConcurrentHashMap<>();
-    // Block Pos -> Ping ID
-    public static final Map<BlockPos, UUID> blockingBlockPosToPingId = new ConcurrentHashMap<>();
     // Ping ID -> BlockedBlockBreakEvent
     private static final Map<UUID, BlockedBlockBreakEvent> blockedBlockBreaks = new ConcurrentHashMap<>();
-    // Active pings for answer processing
-    private static final Map<UUID, PingPoint> activePings = new ConcurrentHashMap<>();
 
     public static String[] newSounds = {
         "ping_location",
@@ -502,7 +504,7 @@ public class QuizCraft implements ModInitializer {
     
     // Clean up blocked events that have expired (timeout after 30 seconds)
     private static void cleanupExpiredBlockedEvents(long currentTime) {
-        final long BLOCKED_EVENT_TIMEOUT_MS = 45000; // 45 seconds
+        final long BLOCKED_EVENT_TIMEOUT_MS = 30000; // 30 seconds
         
         // Clean up expired entity damage blocks
         blockedEntityAttacks.entrySet().removeIf(entry -> {
@@ -598,6 +600,7 @@ public class QuizCraft implements ModInitializer {
                 LOGGER.info("Applied entity damage penalty for ping ID: " + ping.id + " (player: " + aEvent.player.getEntityName() + ")");
             }
             blockingEntityToPingId.remove(aEvent.entity.getUuid());
+            removePingAndMulticast(aEvent.player, ping);
         }
         
         // Execute blocked block break if it matches this ping ID
@@ -647,10 +650,8 @@ public class QuizCraft implements ModInitializer {
                 LOGGER.info("Applied block break penalty for ping ID: " + ping.id + " (player: " + bEvent.player.getEntityName() + ")");
             }
             blockingBlockPosToPingId.remove(bEvent.pos);
+            removePingAndMulticast(bEvent.player, ping);
         }
-
-        // Clean up active ping
-        activePings.remove(ping.id);
     }
     
     // Helper method to check if pickaxe is iron or lower tier
