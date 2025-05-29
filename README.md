@@ -6,6 +6,9 @@
 
 A Minecraft Fabric mod that adds an Apex Legends-style quiz system to the game.
 
+![break-ore](./images/break-ore.jpeg)
+![attack-pig](./images/attack-pig.jpeg)
+
 ## Features
 
 ### Manual Ping
@@ -42,6 +45,10 @@ The mod now automatically creates pings and **blocks the original action** until
 1. Install [Fabric Loader](https://fabricmc.net/use/)
 2. Install [Fabric API](https://modrinth.com/mod/fabric-api)
 3. Download and place the QuizCraft mod jar in your `mods` folder
+
+## Demo
+
+https://github.com/user-attachments/assets/7e82a44f-a1c7-4b74-894b-f17895c69a40
 
 ## Controls
 

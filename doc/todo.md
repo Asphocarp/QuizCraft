@@ -21,6 +21,9 @@
 drama:
 - support PvP!!!
 - cursor emotion
+1. (break, attack) * (wrong, correct)
+2. config
+3. using FSRS (Free Spaced Repetition Scheduler) (same with Anki/momo)
 
 key diff:
 - PvP, multi-player support
