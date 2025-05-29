@@ -144,51 +144,54 @@ public class QuizCraftClient implements ClientModInitializer {
             PingPoint currentPing = renderer.getOnPing();
             long window = client.getWindow().getHandle();
             
-            // Key 1
+            // TODO: 2 maybe sync this display state with all other players (but require show names and so on...)
+            // excute only when all four keys are released, and excute for the last one
             if (GLFW.glfwGetKey(window, GLFW.GLFW_KEY_1) == GLFW.GLFW_PRESS) {
                 if (!key1Pressed) {
                     key1Pressed = true;
                 }
             } else if (GLFW.glfwGetKey(window, GLFW.GLFW_KEY_1) == GLFW.GLFW_RELEASE) {
                 if (key1Pressed) {
-                    handleAnswerKey(currentPing, 0, player.getGameProfile().getName());
                     key1Pressed = false;
+                    if (!key2Pressed && !key3Pressed && !key4Pressed) {
+                        handleAnswerKey(currentPing, 0, player.getGameProfile().getName());
+                    }
                 }
             }
-            
-            // Key 2
             if (GLFW.glfwGetKey(window, GLFW.GLFW_KEY_2) == GLFW.GLFW_PRESS) {
                 if (!key2Pressed) {
                     key2Pressed = true;
                 }
             } else if (GLFW.glfwGetKey(window, GLFW.GLFW_KEY_2) == GLFW.GLFW_RELEASE) {
                 if (key2Pressed) {
-                    handleAnswerKey(currentPing, 1, player.getGameProfile().getName());
                     key2Pressed = false;
+                    if (!key1Pressed && !key3Pressed && !key4Pressed) {
+                        handleAnswerKey(currentPing, 1, player.getGameProfile().getName());
+                    }
                 }
             }
-
-            // Key 3
             if (GLFW.glfwGetKey(window, GLFW.GLFW_KEY_3) == GLFW.GLFW_PRESS) {
                 if (!key3Pressed) {
                     key3Pressed = true;
                 }
             } else if (GLFW.glfwGetKey(window, GLFW.GLFW_KEY_3) == GLFW.GLFW_RELEASE) {
                 if (key3Pressed) {
-                    handleAnswerKey(currentPing, 2, player.getGameProfile().getName());
                     key3Pressed = false;
+                    if (!key1Pressed && !key2Pressed && !key4Pressed) {
+                        handleAnswerKey(currentPing, 2, player.getGameProfile().getName());
+                    }
                 }
             }
-
-            // Key 4
             if (GLFW.glfwGetKey(window, GLFW.GLFW_KEY_4) == GLFW.GLFW_PRESS) {
                 if (!key4Pressed) {
                     key4Pressed = true;
                 }
             } else if (GLFW.glfwGetKey(window, GLFW.GLFW_KEY_4) == GLFW.GLFW_RELEASE) {
                 if (key4Pressed) {
-                    handleAnswerKey(currentPing, 3, player.getGameProfile().getName());
                     key4Pressed = false;
+                    if (!key1Pressed && !key2Pressed && !key3Pressed) {
+                        handleAnswerKey(currentPing, 3, player.getGameProfile().getName());
+                    }
                 }
             }
         }
