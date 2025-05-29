@@ -583,20 +583,20 @@ public class QuizCraft implements ModInitializer {
                     }
                     serverPlayer.addStatusEffect(new net.minecraft.entity.effect.StatusEffectInstance(
                         net.minecraft.entity.effect.StatusEffects.STRENGTH, 120, 0));
-                    serverPlayer.sendMessage(net.minecraft.text.Text.literal("§a✓ Correct! You gained Strength for 6 seconds!"), false);
-                    serverPlayer.sendMessage(net.minecraft.text.Text.literal("§a   Your answer was: §e" + correctPair), false);
+                    serverPlayer.sendMessage(net.minecraft.text.Text.literal("§a✓ Correct! You gained Strength for 6 seconds!"), true);
+                    serverPlayer.sendMessage(net.minecraft.text.Text.literal("§a✓ Your answer: §e" + correctPair), false);
                 }
                 LOGGER.info("Executed blocked entity damage with reward for ping ID: " + ping.id + " (player: " + aEvent.player.getEntityName() + ", damage: " + aEvent.damageAmount + ")");
             } else {
-                // Penalty: Cancel damage and deal 5 true damage to player
+                // >> Penalty: Cancel damage and deal 5 true damage to player
                 serverPlayer.playSound(soundNameToEvent("mirage_sound"), SoundCategory.BLOCKS, 1f, 1f);
                 serverPlayer.damage(serverPlayer.getDamageSources().generic(), 5.0f);
                 // if player died, play "you_tried"
                 if (!serverPlayer.isAlive()) {
                     serverPlayer.playSound(soundNameToEvent("you_tried"), SoundCategory.BLOCKS, 1f, 1f);
                 }
-                serverPlayer.sendMessage(net.minecraft.text.Text.literal("§c✗ Wrong answer! You took 5 damage."), false);
-                serverPlayer.sendMessage(net.minecraft.text.Text.literal("§c   Correct answer was: §e" + correctPair), false);
+                serverPlayer.sendMessage(net.minecraft.text.Text.literal("§c✗ Wrong answer! You took 5 damage."), true);
+                serverPlayer.sendMessage(net.minecraft.text.Text.literal("§c✗ Correct answer: §e" + correctPair), false);
                 LOGGER.info("Applied entity damage penalty for ping ID: " + ping.id + " (player: " + aEvent.player.getEntityName() + ")");
             }
             blockingEntityToPingId.remove(aEvent.entity.getUuid());
@@ -608,29 +608,29 @@ public class QuizCraft implements ModInitializer {
         if (bEvent != null && bEvent.player != null) {
             var serverPlayer = bEvent.player;
             if (isCorrect) {
-                // Reward: Resume break and 25% chance for double drop
                 if (bEvent.world.getBlockState(bEvent.pos).equals(bEvent.state)) {
                     bEvent.world.breakBlock(bEvent.pos, true, bEvent.player);
-
                     // serverPlayer.playSound(soundNameToEvent("wingman"), SoundCategory.BLOCKS, 1f, 1f);
 
-                    // 25% chance for extra break (double drop)
+                    // >> Reward: 25% chance for double drop
                     if (ThreadLocalRandom.current().nextDouble() < 0.25) {
+                        // play reward sound
+                        serverPlayer.playSound(SoundEvents.BLOCK_AMETHYST_BLOCK_CHIME, SoundCategory.BLOCKS, 1f, 1f);
                         // Simulate another break by dropping items again
                         var drops = net.minecraft.block.Block.getDroppedStacks(bEvent.state, (net.minecraft.server.world.ServerWorld) bEvent.world, bEvent.pos, bEvent.blockEntity, bEvent.player, net.minecraft.item.ItemStack.EMPTY);
                         for (net.minecraft.item.ItemStack stack : drops) {
                             net.minecraft.block.Block.dropStack(bEvent.world, bEvent.pos, stack);
                         }
-                        serverPlayer.sendMessage(net.minecraft.text.Text.literal("§a✓ Correct! Lucky! You got double drops!"), false);
-                        serverPlayer.sendMessage(net.minecraft.text.Text.literal("§a   Your answer was: §e" + correctPair), false);
+                        serverPlayer.sendMessage(net.minecraft.text.Text.literal("§a✓ Correct! Lucky! You got double drops!"), true);
+                        serverPlayer.sendMessage(net.minecraft.text.Text.literal("§a✓ Your answer: §e" + correctPair), false);
                     } else {
-                        serverPlayer.sendMessage(net.minecraft.text.Text.literal("§a✓ Correct! Block broken successfully!"), false);
-                        serverPlayer.sendMessage(net.minecraft.text.Text.literal("§a   Your answer was: §e" + correctPair), false);
+                        serverPlayer.sendMessage(net.minecraft.text.Text.literal("§a✓ Correct! Block broken successfully!"), true);
+                        serverPlayer.sendMessage(net.minecraft.text.Text.literal("§a✓ Your answer: §e" + correctPair), false);
                     }
                 }
                 LOGGER.info("Executed blocked block break with reward for ping ID: " + ping.id + " (player: " + bEvent.player.getEntityName() + ")");
             } else {
-                // Penalty: No drops and destroy iron pickaxe or lower
+                // >> Penalty: No drops and destroy iron pickaxe or lower
                 if (bEvent.world.getBlockState(bEvent.pos).equals(bEvent.state)) {
                     // Break block without drops
                     bEvent.world.breakBlock(bEvent.pos, false, bEvent.player);
@@ -639,12 +639,13 @@ public class QuizCraft implements ModInitializer {
                     // Destroy iron pickaxe or lower
                     net.minecraft.item.ItemStack mainHand = serverPlayer.getMainHandStack();
                     if (isPickaxeIronOrLower(mainHand)) {
-                        mainHand.setCount(0); // Destroy the tool
-                        serverPlayer.sendMessage(net.minecraft.text.Text.literal("§c✗ Wrong answer! Your pickaxe broke and no drops!"), false);
-                        serverPlayer.sendMessage(net.minecraft.text.Text.literal("§c   Correct answer was: §e" + correctPair), false);
+                        // let the pickaxe break here (with sound)
+                        mainHand.damage(mainHand.getMaxDamage() + 1, serverPlayer, p -> p.sendToolBreakStatus(net.minecraft.util.Hand.MAIN_HAND));
+                        serverPlayer.sendMessage(net.minecraft.text.Text.literal("§c✗ Wrong answer! Your pickaxe broke and no drops!"), true);
+                        serverPlayer.sendMessage(net.minecraft.text.Text.literal("§c✗ Correct answer: §e" + correctPair), false);
                     } else {
-                        serverPlayer.sendMessage(net.minecraft.text.Text.literal("§c✗ Wrong answer! No drops!"), false);
-                        serverPlayer.sendMessage(net.minecraft.text.Text.literal("§c   Correct answer was: §e" + correctPair), false);
+                        serverPlayer.sendMessage(net.minecraft.text.Text.literal("§c✗ Wrong answer! No drops!"), true);
+                        serverPlayer.sendMessage(net.minecraft.text.Text.literal("§c✗ Correct answer: §e" + correctPair), false);
                     }
                 }
                 LOGGER.info("Applied block break penalty for ping ID: " + ping.id + " (player: " + bEvent.player.getEntityName() + ")");
