@@ -117,7 +117,7 @@ modrinth {
 //	token = 'secret' // Please use an environment variable for this! The default is `$MODRINTH_TOKEN`.
 //	versionNumber = '1.0.0' // The (preferably SemVer) version of the mod. If not specified, it'll use the `version` declaration
 //	versionName = 'My awesome release' // The version title. If not specified, it'll use the version number
-    projectId = 'RECCOz9u' // The ID of your Modrinth project. Slugs will not work.
+    projectId = 'nlGJpiCn' // The ID of your Modrinth project. Slugs will not work.
 	uploadFile = remapJar // Tells Minotaur to use the remapped jar
 	gameVersions = ['1.20.1'] // An array of game versions the version supports
 	loaders = ['fabric'] // Self-explanatory.

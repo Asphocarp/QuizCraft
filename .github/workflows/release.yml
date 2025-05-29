@@ -42,7 +42,7 @@ jobs:
           path: build/libs/
       - uses: Kir-Antipov/mc-publish@v3.3
         with:
-          modrinth-id: RECCOz9u
+          modrinth-id: nlGJpiCn
           modrinth-token: ${{ secrets.MODRINTH_TOKEN }}
 
           curseforge-id: 884820

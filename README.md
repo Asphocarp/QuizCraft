@@ -4,6 +4,8 @@
 
 <h1 align="center">QuizCraft</h1>
 
+Stylish quiz system to help you learn English (or anything else) while playing Minecraft!
+
 ![break-ore](./images/break-ore.jpeg)
 ![attack-pig](./images/attack-pig.jpeg)
 
