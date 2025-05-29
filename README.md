@@ -4,74 +4,54 @@
 
 <h1 align="center">QuizCraft</h1>
 
-A Minecraft Fabric mod that adds an Apex Legends-style quiz system to the game.
-
 ![break-ore](./images/break-ore.jpeg)
 ![attack-pig](./images/attack-pig.jpeg)
 
-## Features
+## 🎯 Transform Your Minecraft Into an Educational Battleground
 
-### Manual Ping
-- Press **C** key to create pings by looking at blocks or entities
-- Supports two types of pings:
-  - **Location pings** for blocks
-  - **Entity pings** for entities (makes them glow for 5 seconds)
+**QuizCraft** combines the tactical excitement of Apex Legends with English vocabulary learning, creating the most engaging way to improve your language skills while playing Minecraft!
 
-### Automatic Ping Hooks with Event Blocking *(New Feature)*
-The mod now automatically creates pings and **blocks the original action** until the ping is cancelled:
+### ⚡ What Makes QuizCraft Special?
 
-- **Attacking enemies**: When you attack any entity, the damage is intercepted and blocked while preserving other attack effects (knockback, sound, etc.). A ping is created on the entity, and the damage is applied when the ping is manually cancelled (by pressing C on the ping).
-- **Mining ores**: When you try to break an ore/mineral block, the break action is intercepted and blocked. A ping is created on the ore, and the ore only breaks when the ping is manually cancelled.
-  - **Supported ores**: Coal, Iron, Gold, Diamond, Emerald, Lapis, Redstone, Copper, Nether Gold, Nether Quartz, Ancient Debris, and all Deepslate variants
+- **🔥 Apex Legends-Inspired Ping System**: Experience authentic battle royale communication with iconic sound effects and visual pings
+- **📚 Comprehensive Vocabulary Libraries**: Choose from 18 different English test preparations including CET-4/6, IELTS, TOEFL, TEM-4/8, and NEEP
+- **🎮 High-Stakes Learning**: Your mining and combat actions trigger vocabulary quizzes - answer correctly for rewards, incorrectly for penalties!
+- **⚔️ Combat Quiz System**: Attack entities to generate quiz challenges with real consequences for your gameplay
+- **💎 Mining Quiz Mechanics**: Breaking ore blocks requires vocabulary knowledge - get it wrong and lose your pickaxe!
 
-**Key Features:**
-- **Damage is healed back** while preserving ALL attack effects (knockback, sound, animations, invincibility frames, etc.)
-- **Block breaking is completely blocked** for ore blocks until ping cancellation
-- Event data (damage amount, damage source, block state) is stored and preserved
-- When ping is cancelled, the original damage is re-applied
-- Automatic timeout mechanism prevents permanent blocking
-- Server-side implementation with Mixin ensures security and 100% effect preservation
+### 🎵 Immersive Audio Experience
 
-### Configuration
-- Customizable ping colors, sounds, and other settings via ModConfig
-- Multiple sound options including custom ping sounds
+Featuring authentic Apex Legends sounds including:
+- Combat callouts and weapon sounds (Wingman, Mozambique, Kraber)
+- Shield break celebrations and knockdown effects  
+- Legendary voice lines from fan-favorite characters
+- Tactical ping audio for team coordination
 
-### Networking
-- Multiplayer support with automatic ping synchronization
-- Entity glow effects are synchronized across all players
+### 🏆 Risk & Reward System
 
-## Installation
+**Correct Answers:**
+- 🛡️ Gain Strength effects in combat
+- 💰 25% chance for double ore drops
+- 🎊 Satisfying victory sounds and effects
 
-1. Install [Fabric Loader](https://fabricmc.net/use/)
-2. Install [Fabric API](https://modrinth.com/mod/fabric-api)
-3. Download and place the QuizCraft mod jar in your `mods` folder
+**Wrong Answers:**
+- 💔 Take damage as punishment
+- ⛏️ Risk breaking your tools
+- 📉 Miss out on valuable resources
 
-## Demo
+### ⚙️ Server Administration
 
-https://github.com/user-attachments/assets/7e82a44f-a1c7-4b74-894b-f17895c69a40
+- **OP-only server configuration** with in-game GUI (`/quizconfig`)
+- **Real-time vocabulary book switching** across all test types
+- **Customizable quiz timeouts** and highlight colors
+- **Team-based ping system** (configurable)
 
-## Controls
+### 🌟 Perfect For:
 
-- **C**: Create manual ping (configurable in key bindings)
-- **C (on existing ping)**: Cancel ping and execute any blocked actions
-- **Attack Entity**: Automatically creates entity ping and blocks the attack until ping is cancelled
-- **Mine Ore**: Automatically creates ore ping and blocks the break until ping is cancelled
+- **English Language Learners** preparing for standardized tests
+- **Minecraft Educators** seeking engaging teaching tools
+- **Gaming Communities** wanting educational content
+- **Apex Legends Fans** missing the tactical communication system
 
-## Technical Details
+Turn every mining expedition into a vocabulary lesson and every combat encounter into a learning opportunity. With QuizCraft, education has never been this exciting!
 
-The mod uses Fabric's event system and Mixin for comprehensive effect preservation:
-- `AttackEntityCallback.EVENT` for entity attack detection and ping creation
-- `@Mixin(LivingEntity.class)` with `@Inject` at `@At("RETURN")` on `damage()` method for healing back damage
-- `PlayerBlockBreakEvents.BEFORE` for ore block break detection and blocking
-
-**Attack Effect Preservation Architecture:**
-- Attack events are intercepted to create pings but allowed to proceed completely (preserving ALL effects)
-- Mixin intercepts `LivingEntity.damage()` method **after** it completes, healing back the exact damage amount
-- This preserves 100% of attack effects: knockback, sound, animations, invincibility frames, armor calculations, etc.
-- Block break events are completely blocked for ore blocks
-- Original event data is stored in memory with unique ping IDs that match the created pings
-- When a specific ping is cancelled, the stored damage is re-applied to the entity
-- Automatic cleanup of expired blocked events (30-second timeout) prevents memory leaks
-- Thread-safe concurrent data structures ensure proper synchronization
-
-All pings are processed through the same unified system and support the full feature set including networking, rendering, and sound effects.
