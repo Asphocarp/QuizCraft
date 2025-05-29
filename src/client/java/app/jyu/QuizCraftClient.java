@@ -45,6 +45,8 @@ import net.minecraft.entity.projectile.ProjectileUtil;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicReference;
+import org.lwjgl.glfw.GLFWKeyCallbackI;
 
 public class QuizCraftClient implements ClientModInitializer {
     public static final double MAX_REACH = 512.0D;
@@ -123,6 +125,10 @@ public class QuizCraftClient implements ClientModInitializer {
         ModConfig.loadConfig(ModConfig.CFG_FILE);
     }
 
+    private static boolean key1Pressed = false;
+    private static boolean key2Pressed = false;
+    private static boolean key3Pressed = false;
+    private static boolean key4Pressed = false;
     private static void checkKeyPress(MinecraftClient client) {
         while (pingKeyBinding.wasPressed()) {
             assert client.player != null;
@@ -136,10 +142,35 @@ public class QuizCraftClient implements ClientModInitializer {
             assert client.player != null;
             var player = client.player;
             PingPoint currentPing = renderer.getOnPing();
-            while (answerKey1.wasPressed()) handleAnswerKey(currentPing, 0, player.getGameProfile().getName());
-            while (answerKey2.wasPressed()) handleAnswerKey(currentPing, 1, player.getGameProfile().getName());
-            while (answerKey3.wasPressed()) handleAnswerKey(currentPing, 2, player.getGameProfile().getName());
-            while (answerKey4.wasPressed()) handleAnswerKey(currentPing, 3, player.getGameProfile().getName());
+            long window = client.getWindow().getHandle();
+            
+            if (GLFW.glfwGetKey(window, GLFW.GLFW_KEY_1) == GLFW.GLFW_PRESS && !key1Pressed) {
+                handleAnswerKey(currentPing, 0, player.getGameProfile().getName());
+                key1Pressed = true;
+            } else if (GLFW.glfwGetKey(window, GLFW.GLFW_KEY_1) == GLFW.GLFW_RELEASE) {
+                key1Pressed = false;
+            }
+            
+            if (GLFW.glfwGetKey(window, GLFW.GLFW_KEY_2) == GLFW.GLFW_PRESS && !key2Pressed) {
+                handleAnswerKey(currentPing, 1, player.getGameProfile().getName());
+                key2Pressed = true;
+            } else if (GLFW.glfwGetKey(window, GLFW.GLFW_KEY_2) == GLFW.GLFW_RELEASE) {
+                key2Pressed = false;
+            }
+
+            if (GLFW.glfwGetKey(window, GLFW.GLFW_KEY_3) == GLFW.GLFW_PRESS && !key3Pressed) {
+                handleAnswerKey(currentPing, 2, player.getGameProfile().getName());
+                key3Pressed = true;
+            } else if (GLFW.glfwGetKey(window, GLFW.GLFW_KEY_3) == GLFW.GLFW_RELEASE) {
+                key3Pressed = false;
+            }
+
+            if (GLFW.glfwGetKey(window, GLFW.GLFW_KEY_4) == GLFW.GLFW_PRESS && !key4Pressed) {
+                handleAnswerKey(currentPing, 3, player.getGameProfile().getName());
+                key4Pressed = true;
+            } else if (GLFW.glfwGetKey(window, GLFW.GLFW_KEY_4) == GLFW.GLFW_RELEASE) {
+                key4Pressed = false;
+            }
         }
     }
 
