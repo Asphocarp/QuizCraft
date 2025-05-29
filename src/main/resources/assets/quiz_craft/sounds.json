@@ -35,16 +35,16 @@
       "quiz_craft:you_tried"
     ]
   },
-  "shield_break_1": {
-    "subtitle": "subtitles.quiz_craft.shield_break_1",
+  "shield_break": {
+    "subtitle": "subtitles.quiz_craft.shield_break",
     "sounds": [
-      "quiz_craft:shield_break_1"
-    ]
-  },
-  "shield_break_2": {
-    "subtitle": "subtitles.quiz_craft.shield_break_2",
-    "sounds": [
-      "quiz_craft:shield_break_2"
+      { "name": "quiz_craft:shield_break_1", "weight": 2 },
+      { "name": "quiz_craft:shield_break_2", "weight": 2 },
+      {
+        "name": "minecraft:item.shield.break",
+        "type": "event",
+        "weight": 1
+      }
     ]
   },
   "vine_boom": {

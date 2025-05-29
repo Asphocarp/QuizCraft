@@ -113,7 +113,7 @@ public class QuizCraft implements ModInitializer {
     // Map to store UUIDs of glowing entities and their glow end time (System.currentTimeMillis())
     private static final Map<UUID, Long> glowingEntities = new ConcurrentHashMap<>();
     // random generator
-    private static final Random rg = new Random();
+    public static final Random rg = new Random();
     
     // Constants for block break pings
     public static final java.awt.Color BLOCK_BREAK_PING_COLOR = new java.awt.Color(0xEB9D39);
@@ -147,8 +147,7 @@ public class QuizCraft implements ModInitializer {
         "mozambique_lifeline",
         "wingman",
         "you_tried",
-        "shield_break_1",
-        "shield_break_2",
+        "shield_break",
         "vine_boom",
         "erro",
         "mirage_sound",
@@ -560,8 +559,12 @@ public class QuizCraft implements ModInitializer {
                     }
                     
                     // >> reward: Give player Strength I for 6 seconds (120 ticks)
-                    // play sound random from shield_break_1/2
-                    serverPlayer.playSound(soundNameToEvent("shield_break_" + rg.nextInt(2)), SoundCategory.BLOCKS, 1f, 1f);
+                    // play sound shield_break
+                    serverPlayer.playSound(soundNameToEvent("shield_break"), SoundCategory.BLOCKS, 1f, 1f);
+                    // if livingEntity died, play "apex_legends_knockdown"
+                    if (!livingEntity.isAlive()) {
+                        serverPlayer.playSound(soundNameToEvent("apex_legends_knockdown"), SoundCategory.BLOCKS, 1f, 1f);
+                    }
                     serverPlayer.addStatusEffect(new net.minecraft.entity.effect.StatusEffectInstance(
                         net.minecraft.entity.effect.StatusEffects.STRENGTH, 120, 0));
                     serverPlayer.sendMessage(net.minecraft.text.Text.literal("§a✓ Correct! You gained Strength for 6 seconds!"), false);
@@ -572,6 +575,10 @@ public class QuizCraft implements ModInitializer {
                 // Penalty: Cancel damage and deal 5 true damage to player
                 serverPlayer.playSound(soundNameToEvent("mirage_sound"), SoundCategory.BLOCKS, 1f, 1f);
                 serverPlayer.damage(serverPlayer.getDamageSources().generic(), 5.0f);
+                // if player died, play "you_tried"
+                if (!serverPlayer.isAlive()) {
+                    serverPlayer.playSound(soundNameToEvent("you_tried"), SoundCategory.BLOCKS, 1f, 1f);
+                }
                 serverPlayer.sendMessage(net.minecraft.text.Text.literal("§c✗ Wrong answer! You took 5 damage."), false);
                 serverPlayer.sendMessage(net.minecraft.text.Text.literal("§c   Correct answer was: §e" + correctPair), false);
                 LOGGER.info("Applied entity damage penalty for ping ID: " + ping.id + " (player: " + aEvent.player.getEntityName() + ")");
@@ -648,9 +655,9 @@ public class QuizCraft implements ModInitializer {
     }
 
     public static boolean redirectBlockedByShield(LivingEntity self, DamageSource source) {
+        // currently when return true, the caller handles hit-on-shield simulation (sound and knockback)
         float amount = CURRENT_DAMAGE_AMOUNT.get();
         LOGGER.info(">> redirectBlockedByShield with amount: {}", amount);
-        var CURRENT_STRENGTH = 0.25; // TODO: add config for this
         if (self.isDead() || self.getWorld().isClient() || !(source.getSource() instanceof ServerPlayerEntity serverPlayer)) { 
             return self.blockedByShield(source); // Call original method
         }
@@ -670,7 +677,6 @@ public class QuizCraft implements ModInitializer {
         // only one ping each entity
         if (blockingEntityToPingId.get(self.getUuid()) != null) {
             LOGGER.info("<< redirectBlockedByShield: Blocking damage and only one ping each entity is allowed");
-            self.takeKnockback(CURRENT_STRENGTH, serverPlayer.getX() - self.getX(), serverPlayer.getZ() - self.getZ());
             return true; // Pretend it was blocked
         }
         
@@ -695,8 +701,6 @@ public class QuizCraft implements ModInitializer {
             serverPlayer, self.getWorld(), Hand.MAIN_HAND, self, null, amount, source);
         blockedEntityAttacks.put(pingToSend.id, blockedEvent);
         LOGGER.info("<< redirectBlockedByShield: Blocked damage and created ping for entity: " + self.getName().getString() + " (damage blocked until ping removed)");
-        // TODO: fix: not even knockback due to MC-267775
-        self.takeKnockback(CURRENT_STRENGTH, serverPlayer.getX() - self.getX(), serverPlayer.getZ() - self.getZ());
         return true; // Pretend it was blocked by shield
     }
 
