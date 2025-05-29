@@ -144,32 +144,52 @@ public class QuizCraftClient implements ClientModInitializer {
             PingPoint currentPing = renderer.getOnPing();
             long window = client.getWindow().getHandle();
             
-            if (GLFW.glfwGetKey(window, GLFW.GLFW_KEY_1) == GLFW.GLFW_PRESS && !key1Pressed) {
-                handleAnswerKey(currentPing, 0, player.getGameProfile().getName());
-                key1Pressed = true;
+            // Key 1
+            if (GLFW.glfwGetKey(window, GLFW.GLFW_KEY_1) == GLFW.GLFW_PRESS) {
+                if (!key1Pressed) {
+                    key1Pressed = true;
+                }
             } else if (GLFW.glfwGetKey(window, GLFW.GLFW_KEY_1) == GLFW.GLFW_RELEASE) {
-                key1Pressed = false;
+                if (key1Pressed) {
+                    handleAnswerKey(currentPing, 0, player.getGameProfile().getName());
+                    key1Pressed = false;
+                }
             }
             
-            if (GLFW.glfwGetKey(window, GLFW.GLFW_KEY_2) == GLFW.GLFW_PRESS && !key2Pressed) {
-                handleAnswerKey(currentPing, 1, player.getGameProfile().getName());
-                key2Pressed = true;
+            // Key 2
+            if (GLFW.glfwGetKey(window, GLFW.GLFW_KEY_2) == GLFW.GLFW_PRESS) {
+                if (!key2Pressed) {
+                    key2Pressed = true;
+                }
             } else if (GLFW.glfwGetKey(window, GLFW.GLFW_KEY_2) == GLFW.GLFW_RELEASE) {
-                key2Pressed = false;
+                if (key2Pressed) {
+                    handleAnswerKey(currentPing, 1, player.getGameProfile().getName());
+                    key2Pressed = false;
+                }
             }
 
-            if (GLFW.glfwGetKey(window, GLFW.GLFW_KEY_3) == GLFW.GLFW_PRESS && !key3Pressed) {
-                handleAnswerKey(currentPing, 2, player.getGameProfile().getName());
-                key3Pressed = true;
+            // Key 3
+            if (GLFW.glfwGetKey(window, GLFW.GLFW_KEY_3) == GLFW.GLFW_PRESS) {
+                if (!key3Pressed) {
+                    key3Pressed = true;
+                }
             } else if (GLFW.glfwGetKey(window, GLFW.GLFW_KEY_3) == GLFW.GLFW_RELEASE) {
-                key3Pressed = false;
+                if (key3Pressed) {
+                    handleAnswerKey(currentPing, 2, player.getGameProfile().getName());
+                    key3Pressed = false;
+                }
             }
 
-            if (GLFW.glfwGetKey(window, GLFW.GLFW_KEY_4) == GLFW.GLFW_PRESS && !key4Pressed) {
-                handleAnswerKey(currentPing, 3, player.getGameProfile().getName());
-                key4Pressed = true;
+            // Key 4
+            if (GLFW.glfwGetKey(window, GLFW.GLFW_KEY_4) == GLFW.GLFW_PRESS) {
+                if (!key4Pressed) {
+                    key4Pressed = true;
+                }
             } else if (GLFW.glfwGetKey(window, GLFW.GLFW_KEY_4) == GLFW.GLFW_RELEASE) {
-                key4Pressed = false;
+                if (key4Pressed) {
+                    handleAnswerKey(currentPing, 3, player.getGameProfile().getName());
+                    key4Pressed = false;
+                }
             }
         }
     }

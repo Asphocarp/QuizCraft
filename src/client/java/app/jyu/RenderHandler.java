@@ -290,8 +290,25 @@ public class RenderHandler {
         int totalHeight = textLines.size() * (client.textRenderer.fontHeight + 2) + client.textRenderer.fontHeight;
         topLeftY -= totalHeight*0.5;
         // render text
-        for (String line : textLines) {
-            drawContext.drawText(client.textRenderer, line, topLeftX, topLeftY, ModConfig.infoColor, true);
+        for (int lineIdx = 0; lineIdx < textLines.size(); lineIdx++) { // Iterate using index
+            String line = textLines.get(lineIdx);
+            int color = ModConfig.infoColor; // Default color
+
+            if (ping.quiz != null && lineIdx > 0) { // If it's an option line (lineIdx > 0 means not the question)
+                int optionIndex = lineIdx - 1; // 0-indexed for ping.quiz.options and key bindings logic
+
+                boolean keyPressed = false;
+                if (optionIndex == 0 && QuizCraftClient.key1Pressed) keyPressed = true;
+                else if (optionIndex == 1 && QuizCraftClient.key2Pressed) keyPressed = true;
+                else if (optionIndex == 2 && QuizCraftClient.key3Pressed) keyPressed = true;
+                else if (optionIndex == 3 && QuizCraftClient.key4Pressed) keyPressed = true;
+                
+                if (keyPressed) {
+                    color = 0xFFFFFF00; // Yellow highlight
+                }
+            }
+
+            drawContext.drawText(client.textRenderer, line, topLeftX, topLeftY, color, true);
             topLeftY += client.textRenderer.fontHeight + 2;
         }
 
