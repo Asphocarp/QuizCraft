@@ -125,10 +125,10 @@ public class QuizCraftClient implements ClientModInitializer {
         ModConfig.loadConfig(ModConfig.CFG_FILE);
     }
 
-    private static boolean key1Pressed = false;
-    private static boolean key2Pressed = false;
-    private static boolean key3Pressed = false;
-    private static boolean key4Pressed = false;
+    public volatile static boolean key1Pressed = false;
+    public volatile static boolean key2Pressed = false;
+    public volatile static boolean key3Pressed = false;
+    public volatile static boolean key4Pressed = false;
     private static void checkKeyPress(MinecraftClient client) {
         while (pingKeyBinding.wasPressed()) {
             assert client.player != null;
