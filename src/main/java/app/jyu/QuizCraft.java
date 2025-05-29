@@ -650,7 +650,7 @@ public class QuizCraft implements ModInitializer {
     public static boolean redirectBlockedByShield(LivingEntity self, DamageSource source) {
         float amount = CURRENT_DAMAGE_AMOUNT.get();
         LOGGER.info(">> redirectBlockedByShield with amount: {}", amount);
-        var CURRENT_STRENGTH = 0.2; // TODO: add config for this
+        var CURRENT_STRENGTH = 0.25; // TODO: add config for this
         if (self.isDead() || self.getWorld().isClient() || !(source.getSource() instanceof ServerPlayerEntity serverPlayer)) { 
             return self.blockedByShield(source); // Call original method
         }

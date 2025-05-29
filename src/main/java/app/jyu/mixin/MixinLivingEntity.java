@@ -24,23 +24,32 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(LivingEntity.class)
 public class MixinLivingEntity {
+    // @Redirect(
+    //   method = "damage(Lnet/minecraft/entity/damage/DamageSource;F)Z",
+    //   at = @At(
+    //     value  = "INVOKE",
+    //     target = "Lnet/minecraft/entity/LivingEntity;blockedByShield(Lnet/minecraft/entity/damage/DamageSource;)Z"
+    //   )
+    // )
+    // public boolean redirectBlockedByShield(LivingEntity self, DamageSource source) {
+    //     return QuizCraft.redirectBlockedByShield(self, source);
+    // }
+
     @Inject(
-      method = "damage(Lnet/minecraft/entity/damage/DamageSource;F)Z",
-      at = @At("HEAD")
-    )
-    public void onDamageStart(DamageSource source, float amount, CallbackInfoReturnable<Boolean> cir) {
-        LivingEntity self = (LivingEntity)(Object)this;
-        QuizCraft.onDamageStart(self, source, amount, cir);
-    }
-    
-    @Redirect(
       method = "damage(Lnet/minecraft/entity/damage/DamageSource;F)Z",
       at = @At(
         value  = "INVOKE",
-        target = "Lnet/minecraft/entity/LivingEntity;blockedByShield(Lnet/minecraft/entity/damage/DamageSource;)Z"
-      )
+        target = "Lnet/minecraft/entity/LivingEntity;blockedByShield(Lnet/minecraft/entity/damage/DamageSource;)Z",
+        shift = At.Shift.AFTER
+      ),
+      cancellable = true
     )
-    public boolean redirectBlockedByShield(LivingEntity self, DamageSource source) {
-        return QuizCraft.redirectBlockedByShield(self, source);
+    public void onInvokingBlockedByShieldInDamage(DamageSource source, float amount, CallbackInfoReturnable<Boolean> cir) {
+        LivingEntity self = (LivingEntity)(Object)this;
+        QuizCraft.onDamageStart(self, source, amount, cir);
+        // monkey patch: cancel the subsequent damage() procedure if blocked by shield
+        if (QuizCraft.redirectBlockedByShield(self, source)) {
+            cir.setReturnValue(true);
+        }
     }
 } 
