@@ -1,4 +1,5 @@
-- [ ] 0 碎甲声音
+- [ ] fix, sync logic. first ping may not be applied. log in&out, activePings is clear but client still has it.
+  - [ ] make it persistent? sync periodically?
 
 - [ ] 1 阻挡声音; fix shield blocking cause it to not even knockback
 - [ ] 1 add channel for ping (default channel string is "default") (only forward pings to this channel (teammates subscript to this channel))
@@ -27,6 +28,7 @@ key diff:
 
 
 done:
+- [x] 0 碎甲声音
 - [x] 0 re-naming: QuizCraft
 - [x] select book (and other global server-side config, like highlight color)
 - [x] 1 current MVP .damage() needs some fix. it use current weapon and can be blocked by current shield.
