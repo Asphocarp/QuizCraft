@@ -8,9 +8,9 @@ import java.lang.reflect.Type;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.ThreadLocalRandom;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Random;
 
 import com.google.gson.Gson;
 import com.google.gson.annotations.SerializedName;
@@ -57,7 +57,6 @@ public class Book implements Serializable {
     public List<Word> words;
     
     private static volatile CopyOnWriteArrayList<Book> BOOKS;
-    private static final Random rg = new Random();
     
     // Book names mapping for file loading
     private static final String[] BOOK_FILES = {
@@ -156,7 +155,7 @@ public class Book implements Serializable {
             return null;
         }
         
-        return book.words.get(rg.nextInt(book.words.size()));
+        return book.words.get(ThreadLocalRandom.current().nextInt(book.words.size()));
     }
 
     public static Quiz getRandomQuiz(int bID) {
@@ -165,10 +164,10 @@ public class Book implements Serializable {
             QuizCraft.LOGGER.warn("Book {} not found or has no words", bID);
             return null;
         }
-        int ans_idx = rg.nextInt(4);
-        var four_words = rg.ints(0, book.words.size()).distinct().limit(4).mapToObj(book.words::get).toArray(Word[]::new);
+        int ans_idx = ThreadLocalRandom.current().nextInt(4);
+        var four_words = ThreadLocalRandom.current().ints(0, book.words.size()).distinct().limit(4).mapToObj(book.words::get).toArray(Word[]::new);
         var four_options = Arrays.stream(four_words).map(word -> word.word).toArray(String[]::new);
-        var ask_meaning = four_words[ans_idx].meanings.get(rg.nextInt(four_words[ans_idx].meanings.size()));
+        var ask_meaning = four_words[ans_idx].meanings.get(ThreadLocalRandom.current().nextInt(four_words[ans_idx].meanings.size()));
         // get quiz
         var quiz = new Quiz(ask_meaning.meaning, four_options, ans_idx);
         return quiz;

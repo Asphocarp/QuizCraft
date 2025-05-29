@@ -9,8 +9,8 @@ import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ThreadLocalRandom;
 import java.util.ArrayList;
-import java.util.Random;
 
 import com.google.gson.Gson;
 import com.google.gson.annotations.SerializedName;
@@ -34,8 +34,6 @@ public class Quiz implements Serializable {
     public UUID uuid;
 
     private static volatile ConcurrentHashMap<UUID, Quiz> QUIZ_MAP;
-    // private static volatile CopyOnWriteArrayList<Book> BOOKS;
-    private static final Random rg = new Random();
 
     public Quiz(String question, String[] options, int answer) {
         this.question = question;
@@ -106,7 +104,7 @@ public class Quiz implements Serializable {
             return null;
         }
         List<UUID> keys = new ArrayList<>(QUIZ_MAP.keySet());
-        UUID randomKey = keys.get(rg.nextInt(keys.size()));
+        UUID randomKey = keys.get(ThreadLocalRandom.current().nextInt(keys.size()));
         var item = QUIZ_MAP.get(randomKey);
         item.answer = null;
         return item;

@@ -46,12 +46,15 @@ import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.fabric.api.event.player.AttackEntityCallback;
 import net.fabricmc.fabric.api.event.player.PlayerBlockBreakEvents;
+
+import java.sql.Time;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Objects;
-import java.util.Random;
+// import java.util.Random;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ThreadLocalRandom;
 import java.util.Map;
 
 import static app.jyu.NetworkingConstants.PING_PACKET;
@@ -64,8 +67,8 @@ import static app.jyu.NetworkingConstants.SYNC_CONFIG_PACKET;
 
 // Data classes for storing blocked events
 class BlockedEntityAttackEvent {
-    public final net.minecraft.entity.player.PlayerEntity player;
-    public final net.minecraft.world.World world;
+    public final ServerPlayerEntity player;
+    public final World world;
     public final Hand hand;
     public final Entity entity;
     public final net.minecraft.util.hit.EntityHitResult hitResult;
@@ -73,7 +76,7 @@ class BlockedEntityAttackEvent {
     public final DamageSource damageSource;
     public final long timestamp;
     
-    public BlockedEntityAttackEvent(net.minecraft.entity.player.PlayerEntity player, net.minecraft.world.World world, Hand hand, Entity entity, net.minecraft.util.hit.EntityHitResult hitResult, float damageAmount, DamageSource damageSource) {
+    public BlockedEntityAttackEvent(ServerPlayerEntity player, World world, Hand hand, Entity entity, net.minecraft.util.hit.EntityHitResult hitResult, float damageAmount, DamageSource damageSource) {
         this.player = player;
         this.world = world;
         this.hand = hand;
@@ -86,14 +89,14 @@ class BlockedEntityAttackEvent {
 }
 
 class BlockedBlockBreakEvent {
-    public final net.minecraft.world.World world;
-    public final net.minecraft.entity.player.PlayerEntity player;
+    public final World world;
+    public final ServerPlayerEntity player;
     public final BlockPos pos;
     public final BlockState state;
     public final net.minecraft.block.entity.BlockEntity blockEntity;
     public final long timestamp;
     
-    public BlockedBlockBreakEvent(net.minecraft.world.World world, net.minecraft.entity.player.PlayerEntity player, BlockPos pos, BlockState state, net.minecraft.block.entity.BlockEntity blockEntity) {
+    public BlockedBlockBreakEvent(World world, ServerPlayerEntity player, BlockPos pos, BlockState state, net.minecraft.block.entity.BlockEntity blockEntity) {
         this.world = world;
         this.player = player;
         this.pos = pos;
@@ -114,8 +117,6 @@ public class QuizCraft implements ModInitializer {
     public static final long GLOW_DURATION_MS = 5000; // 5 seconds in milliseconds
     // Map to store UUIDs of glowing entities and their glow end time (System.currentTimeMillis())
     private static final Map<UUID, Long> glowingEntities = new ConcurrentHashMap<>();
-    // random generator
-    public static final Random rg = new Random();
     
     // Constants for block break pings
     public static final java.awt.Color BLOCK_BREAK_PING_COLOR = new java.awt.Color(0xEB9D39);
@@ -466,7 +467,7 @@ public class QuizCraft implements ModInitializer {
     }
     
     // Server-side event handler for block breaking - blocks the break and creates a ping (ONLY FOR ORES)
-    private static boolean onBlockBreak(net.minecraft.world.World world, net.minecraft.entity.player.PlayerEntity player, BlockPos pos, BlockState state, net.minecraft.block.entity.BlockEntity blockEntity) {
+    private static boolean onBlockBreak(World world, net.minecraft.entity.player.PlayerEntity player, BlockPos pos, BlockState state, net.minecraft.block.entity.BlockEntity blockEntity) {
         if (world.isClient() || !(player instanceof ServerPlayerEntity serverPlayer)) {
             return true;
         }
@@ -492,7 +493,7 @@ public class QuizCraft implements ModInitializer {
             return true; // Allow break to proceed
         }
         // Store stuff
-        BlockedBlockBreakEvent blockedEvent = new BlockedBlockBreakEvent(world, player, pos, state, blockEntity);
+        BlockedBlockBreakEvent blockedEvent = new BlockedBlockBreakEvent(world, serverPlayer, pos, state, blockEntity);
         blockedBlockBreaks.put(pingToSend.id, blockedEvent);
         activePings.put(pingToSend.id, pingToSend);
         blockingBlockPosToPingId.put(pos, pingToSend.id);
@@ -501,7 +502,7 @@ public class QuizCraft implements ModInitializer {
     
     // Clean up blocked events that have expired (timeout after 30 seconds)
     private static void cleanupExpiredBlockedEvents(long currentTime) {
-        final long BLOCKED_EVENT_TIMEOUT_MS = 30000; // 30 seconds
+        final long BLOCKED_EVENT_TIMEOUT_MS = 45000; // 45 seconds
         
         // Clean up expired entity damage blocks
         blockedEntityAttacks.entrySet().removeIf(entry -> {
@@ -510,7 +511,7 @@ public class QuizCraft implements ModInitializer {
             if (expired) {
                 LOGGER.warn("Cleaned up expired blocked entity damage for player: " + event.player.getEntityName() + " (ping ID: " + entry.getKey() + ")");
                 blockingEntityToPingId.remove(event.entity.getUuid());
-                activePings.remove(entry.getKey());
+                removePingAndMulticast(event.player, activePings.get(entry.getKey()));
             }
             return expired;
         });
@@ -522,7 +523,7 @@ public class QuizCraft implements ModInitializer {
             if (expired) {
                 LOGGER.warn("Cleaned up expired blocked block break for player: " + event.player.getEntityName() + " (ping ID: " + entry.getKey() + ")");
                 blockingBlockPosToPingId.remove(event.pos);
-                activePings.remove(entry.getKey());
+                removePingAndMulticast(event.player, activePings.get(entry.getKey()));
             }
             return expired;
         });
@@ -539,7 +540,8 @@ public class QuizCraft implements ModInitializer {
         
         // Execute blocked entity damage if it matches this ping ID
         BlockedEntityAttackEvent aEvent = blockedEntityAttacks.remove(ping.id);
-        if (aEvent != null && aEvent.entity instanceof LivingEntity livingEntity && aEvent.player instanceof ServerPlayerEntity serverPlayer) {
+        if (aEvent != null && aEvent.entity instanceof LivingEntity livingEntity && aEvent.player != null) {
+            var serverPlayer = aEvent.player;
             if (isCorrect) {
                 // Reward: Resume damage and give player Strength I for 6 seconds
                 if (livingEntity.isAlive()) {
@@ -572,6 +574,7 @@ public class QuizCraft implements ModInitializer {
                             0.0, 0.0, 0.0, // dx, dy, dz (velocity/spread)
                             0.0); // speed
                     }
+                    // maybe show a line of bullet particles from the player to the entity here?
                     // if livingEntity died, play "apex_legends_knockdown"
                     if (!livingEntity.isAlive()) {
                         serverPlayer.playSound(soundNameToEvent("apex_legends_knockdown"), SoundCategory.BLOCKS, 1f, 1f);
@@ -599,7 +602,8 @@ public class QuizCraft implements ModInitializer {
         
         // Execute blocked block break if it matches this ping ID
         BlockedBlockBreakEvent bEvent = blockedBlockBreaks.remove(ping.id);
-        if (bEvent != null && bEvent.player instanceof ServerPlayerEntity serverPlayer) {
+        if (bEvent != null && bEvent.player != null) {
+            var serverPlayer = bEvent.player;
             if (isCorrect) {
                 // Reward: Resume break and 25% chance for double drop
                 if (bEvent.world.getBlockState(bEvent.pos).equals(bEvent.state)) {
@@ -608,7 +612,7 @@ public class QuizCraft implements ModInitializer {
                     // serverPlayer.playSound(soundNameToEvent("wingman"), SoundCategory.BLOCKS, 1f, 1f);
 
                     // 25% chance for extra break (double drop)
-                    if (Math.random() < 0.25) {
+                    if (ThreadLocalRandom.current().nextDouble() < 0.25) {
                         // Simulate another break by dropping items again
                         var drops = net.minecraft.block.Block.getDroppedStacks(bEvent.state, (net.minecraft.server.world.ServerWorld) bEvent.world, bEvent.pos, bEvent.blockEntity, bEvent.player, net.minecraft.item.ItemStack.EMPTY);
                         for (net.minecraft.item.ItemStack stack : drops) {
