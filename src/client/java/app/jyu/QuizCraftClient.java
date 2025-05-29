@@ -61,7 +61,7 @@ public class QuizCraftClient implements ClientModInitializer {
     @Override
     public void onInitializeClient() {
         pingKeyBinding = KeyBindingHelper.registerKeyBinding(new KeyBinding(
-                "key.quiz_craft.ping",
+                "key.quiz_craft.cancel",
                 InputUtil.Type.KEYSYM,
                 GLFW.GLFW_KEY_C,
                 "category.quiz_craft.quiz_craft"
@@ -136,11 +136,10 @@ public class QuizCraftClient implements ClientModInitializer {
             assert client.player != null;
             var player = client.player;
             PingPoint currentPing = renderer.getOnPing();
-
-            if (answerKey1.wasPressed()) handleAnswerKey(currentPing, 0, player.getGameProfile().getName());
-            if (answerKey2.wasPressed()) handleAnswerKey(currentPing, 1, player.getGameProfile().getName());
-            if (answerKey3.wasPressed()) handleAnswerKey(currentPing, 2, player.getGameProfile().getName());
-            if (answerKey4.wasPressed()) handleAnswerKey(currentPing, 3, player.getGameProfile().getName());
+            while (answerKey1.wasPressed()) handleAnswerKey(currentPing, 0, player.getGameProfile().getName());
+            while (answerKey2.wasPressed()) handleAnswerKey(currentPing, 1, player.getGameProfile().getName());
+            while (answerKey3.wasPressed()) handleAnswerKey(currentPing, 2, player.getGameProfile().getName());
+            while (answerKey4.wasPressed()) handleAnswerKey(currentPing, 3, player.getGameProfile().getName());
         }
     }
 

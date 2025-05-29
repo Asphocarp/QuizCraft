@@ -190,7 +190,6 @@ public class QuizCraft implements ModInitializer {
         ServerPlayNetworking.registerGlobalReceiver(REMOVE_PING_PACKET, QuizCraft::onReceivingRemovePingPacket);
         ServerPlayNetworking.registerGlobalReceiver(ANSWER_PACKET, QuizCraft::onReceivingAnswerPacket);
         
-        // register server config event handlers
         ServerPlayNetworking.registerGlobalReceiver(REQUEST_CONFIG_PACKET, QuizCraft::onReceivingRequestConfigPacket);
         ServerPlayNetworking.registerGlobalReceiver(UPDATE_CONFIG_PACKET, QuizCraft::onReceivingUpdateConfigPacket);
         ServerPlayNetworking.registerGlobalReceiver(OPEN_CONFIG_GUI_PACKET, QuizCraft::onReceivingOpenConfigGuiPacket);
@@ -419,7 +418,6 @@ public class QuizCraft implements ModInitializer {
         glowingEntities.entrySet().removeIf(entry -> {
             UUID entityUUID = entry.getKey();
             long endTime = entry.getValue();
-
             if (currentTime >= endTime) {
                 server.execute(() -> { // Ensure execution on the main server thread
                     for (ServerWorld world : server.getWorlds()) {

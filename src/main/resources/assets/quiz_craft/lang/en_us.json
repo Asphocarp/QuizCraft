@@ -1,6 +1,10 @@
 {
   "category.quiz_craft.quiz_craft": "QuizCraft",
-  "key.quiz_craft.ping": "Ping",
+  "key.quiz_craft.cancel": "Cancel Quiz",
+  "key.quiz_craft.answer1": "Answer 1",
+  "key.quiz_craft.answer2": "Answer 2",
+  "key.quiz_craft.answer3": "Answer 3",
+  "key.quiz_craft.answer4": "Answer 4",
   "title.quiz_craft.config": "QuizCraft",
   "config.quiz_craft.general": "General",
   "config.quiz_craft.pingNumEach": "Ping Num Each Player",
