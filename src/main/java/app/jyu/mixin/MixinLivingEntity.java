@@ -56,7 +56,7 @@ public class MixinLivingEntity {
         if (QuizCraft.redirectBlockedByShield(self, source) && source.getSource() instanceof ServerPlayerEntity serverPlayer) {
             // simulate hit on shield: play sound shield_block1-5; knockback
             serverPlayer.playSound(SoundEvents.ITEM_SHIELD_BLOCK, SoundCategory.BLOCKS, 0.75f, 1f);
-            // TODO show energy shield ring visual effect
+            // show energy shield ring visual effect
             // START --- Visual Effect --- START
             if (self.getWorld() instanceof ServerWorld serverWorld) {
                 double radius = 0.75; // Radius of the sphere
