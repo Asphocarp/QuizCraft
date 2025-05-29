@@ -1,9 +1,7 @@
-- [ ] 0 fix collision with other mods, screenshot, polish doc, publish to modrinth
-- [ ] 1 key down, highlight current focused option; key up, select
+- [ ] 0 simple doc, publish to modrinth
 
 - [ ] 1 think: make it persistent? sync periodically?
-- [ ] 1 fix: cancel can also be mouse click? show the real keycode, no more hardcode
-- [ ] 1 notebook or wrong ans; forve review - maybe introduce fancy SOTA algo
+- [ ] 1 notebook or wrong ans; forve review - maybe introduce fancy SOTA algo (FSRS)
 
 - [ ] 1 add channel for ping (default channel string is "default") (only forward pings to this channel (teammates subscript to this channel))
 - [ ] 1 screen border indicator, with margin?
@@ -11,7 +9,7 @@
 - [ ] 1 config for penalty
 
 
-- [ ] 2 hard: conflict with eurake????
+- [ ] 2 hard: conflict with eurake???? fix collision
 - [ ] 2 render a hang sword ? (beside the ping)
 - [ ] 2 maybe - 紫甲,蓝甲,白甲 - 每次碎甲直到没甲
 - [ ] 3 cool&hard: tas版本，PvP时比谁回答的快
@@ -46,3 +44,4 @@ done:
 - [x] 0 render quiz on screen, indicator points to the mob?
 - [x] fix, sync logic. first ping may not be applied. log in&out, activePings is clear but client still has it.
 - [x] 1 shield-block-sound; fix shield blocking cause it to not even knockback
+- [x] 1 key down, highlight current focused option; key up, select
