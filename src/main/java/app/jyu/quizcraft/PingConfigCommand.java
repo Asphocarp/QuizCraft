@@ -1,4 +1,4 @@
-package app.jyu;
+package app.jyu.quizcraft;
 
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.context.CommandContext;
@@ -12,7 +12,7 @@ import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 
-import static app.jyu.NetworkingConstants.OPEN_CONFIG_GUI_PACKET;
+import static app.jyu.quizcraft.NetworkingConstants.OPEN_CONFIG_GUI_PACKET;
 
 public class PingConfigCommand {
     

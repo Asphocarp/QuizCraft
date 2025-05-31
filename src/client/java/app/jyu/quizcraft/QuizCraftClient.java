@@ -1,4 +1,4 @@
-package app.jyu;
+package app.jyu.quizcraft;
 
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
@@ -28,18 +28,18 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.RaycastContext;
 import org.lwjgl.glfw.GLFW;
 
-import app.jyu.QuizCraftClient;
+import app.jyu.quizcraft.QuizCraftClient;
 import java.awt.*;
 import java.io.IOException;
 import java.util.Objects;
 import java.util.function.Predicate;
-import static app.jyu.QuizCraft.LOGGER;
-import static app.jyu.NetworkingConstants.PING_PACKET;
-import static app.jyu.NetworkingConstants.REMOVE_PING_PACKET;
-import static app.jyu.NetworkingConstants.ANSWER_PACKET;
-import static app.jyu.NetworkingConstants.SYNC_CONFIG_PACKET;
-import static app.jyu.NetworkingConstants.OPEN_CONFIG_GUI_PACKET;
-import static app.jyu.NetworkingConstants.REQUEST_CONFIG_PACKET;
+import static app.jyu.quizcraft.QuizCraft.LOGGER;
+import static app.jyu.quizcraft.NetworkingConstants.PING_PACKET;
+import static app.jyu.quizcraft.NetworkingConstants.REMOVE_PING_PACKET;
+import static app.jyu.quizcraft.NetworkingConstants.ANSWER_PACKET;
+import static app.jyu.quizcraft.NetworkingConstants.SYNC_CONFIG_PACKET;
+import static app.jyu.quizcraft.NetworkingConstants.OPEN_CONFIG_GUI_PACKET;
+import static app.jyu.quizcraft.NetworkingConstants.REQUEST_CONFIG_PACKET;
 
 import net.minecraft.entity.projectile.ProjectileUtil;
 

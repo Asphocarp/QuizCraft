@@ -1,6 +1,6 @@
-package app.jyu;
+package app.jyu.quizcraft;
 
-import app.jyu.ClientTickHandler;
+import app.jyu.quizcraft.ClientTickHandler;
 import net.minecraft.client.MinecraftClient;
 
 public class ClientTickHandler {

@@ -1,4 +1,4 @@
-package app.jyu;
+package app.jyu.quizcraft;
 
 import java.util.HashSet;
 import java.util.List;

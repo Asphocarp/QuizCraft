@@ -1,6 +1,6 @@
-package app.jyu.mixin;
+package app.jyu.quizcraft.mixin;
 
-import app.jyu.QuizCraft;
+import app.jyu.quizcraft.QuizCraft;
 import net.minecraft.advancement.criterion.Criteria;
 import net.minecraft.entity.AreaEffectCloudEntity;
 import net.minecraft.entity.Entity;

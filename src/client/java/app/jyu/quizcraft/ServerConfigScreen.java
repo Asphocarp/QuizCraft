@@ -1,4 +1,4 @@
-package app.jyu;
+package app.jyu.quizcraft;
 
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
@@ -17,7 +17,7 @@ import java.util.Map;
 import java.util.ArrayList;
 import java.util.List;
 
-import static app.jyu.NetworkingConstants.UPDATE_CONFIG_PACKET;
+import static app.jyu.quizcraft.NetworkingConstants.UPDATE_CONFIG_PACKET;
 
 public class ServerConfigScreen extends Screen {
     private final Screen parent;

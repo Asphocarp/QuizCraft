@@ -16,13 +16,13 @@
 	"environment": "*",
 	"entrypoints": {
 		"main": [
-			"app.jyu.QuizCraft"
+			"app.jyu.quizcraft.QuizCraft"
 		],
 		"client": [
-			"app.jyu.QuizCraftClient"
+			"app.jyu.quizcraft.QuizCraftClient"
 		],
 		"modmenu": [
-			"app.jyu.ModConfig"
+			"app.jyu.quizcraft.ModConfig"
 		]
 	},
 	"mixins": [

@@ -1,4 +1,4 @@
-package app.jyu;
+package app.jyu.quizcraft;
 
 import java.io.InputStream;
 import java.io.InputStreamReader;

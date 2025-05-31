@@ -1,4 +1,4 @@
-package app.jyu;
+package app.jyu.quizcraft;
 
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
@@ -57,13 +57,13 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.Map;
 
-import static app.jyu.NetworkingConstants.PING_PACKET;
-import static app.jyu.NetworkingConstants.REMOVE_PING_PACKET;
-import static app.jyu.NetworkingConstants.ANSWER_PACKET;
-import static app.jyu.NetworkingConstants.REQUEST_CONFIG_PACKET;
-import static app.jyu.NetworkingConstants.UPDATE_CONFIG_PACKET;
-import static app.jyu.NetworkingConstants.OPEN_CONFIG_GUI_PACKET;
-import static app.jyu.NetworkingConstants.SYNC_CONFIG_PACKET;
+import static app.jyu.quizcraft.NetworkingConstants.PING_PACKET;
+import static app.jyu.quizcraft.NetworkingConstants.REMOVE_PING_PACKET;
+import static app.jyu.quizcraft.NetworkingConstants.ANSWER_PACKET;
+import static app.jyu.quizcraft.NetworkingConstants.REQUEST_CONFIG_PACKET;
+import static app.jyu.quizcraft.NetworkingConstants.UPDATE_CONFIG_PACKET;
+import static app.jyu.quizcraft.NetworkingConstants.OPEN_CONFIG_GUI_PACKET;
+import static app.jyu.quizcraft.NetworkingConstants.SYNC_CONFIG_PACKET;
 
 // Data classes for storing blocked events
 class BlockedEntityAttackEvent {

@@ -1,6 +1,6 @@
-package app.jyu;
+package app.jyu.quizcraft;
 
-import app.jyu.ModConfig;
+import app.jyu.quizcraft.ModConfig;
 import com.terraformersmc.modmenu.api.ConfigScreenFactory;
 import com.terraformersmc.modmenu.api.ModMenuApi;
 import me.shedaniel.clothconfig2.api.ConfigBuilder;
@@ -16,7 +16,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Properties;
 
-import static app.jyu.QuizCraft.MOD_ID;
+import static app.jyu.quizcraft.QuizCraft.MOD_ID;
 
 public class ModConfig implements ModMenuApi, ConfigScreenFactory<Screen> {
     public static final File CFG_FILE = new File(
