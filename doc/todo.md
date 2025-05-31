@@ -1,6 +1,5 @@
-- [x] 0 simple doc, publish to modrinth
 - [ ] 0 cannot change hotkey! & cannot block changing weapon!
-- [ ] collude with pingsystem?
+  - for now, simply let the user remove original keybinding of 1234
 
 - [ ] 1 notebook or wrong ans; forve review - maybe introduce fancy SOTA algo (FSRS)
 
@@ -32,6 +31,7 @@ key diff:
 
 
 done:
+- [x] 0 simple doc, publish to modrinth
 - [x] 1 think: make it persistent? sync periodically? X
 - [x] 0 shield-broken sound
 - [x] 0 re-naming: QuizCraft
