@@ -1,6 +1,7 @@
-- [ ] 0 simple doc, publish to modrinth
+- [x] 0 simple doc, publish to modrinth
+- [ ] 0 cannot change hotkey! & cannot block changing weapon!
+- [ ] collude with pingsystem?
 
-- [ ] 1 think: make it persistent? sync periodically?
 - [ ] 1 notebook or wrong ans; forve review - maybe introduce fancy SOTA algo (FSRS)
 
 - [ ] 1 add channel for ping (default channel string is "default") (only forward pings to this channel (teammates subscript to this channel))
@@ -9,7 +10,6 @@
 - [ ] 1 config for penalty
 
 
-- [ ] 2 hard: conflict with eurake???? fix collision
 - [ ] 2 render a hang sword ? (beside the ping)
 - [ ] 2 maybe - 紫甲,蓝甲,白甲 - 每次碎甲直到没甲
 - [ ] 3 cool&hard: tas版本，PvP时比谁回答的快
@@ -32,6 +32,7 @@ key diff:
 
 
 done:
+- [x] 1 think: make it persistent? sync periodically? X
 - [x] 0 shield-broken sound
 - [x] 0 re-naming: QuizCraft
 - [x] select book (and other global server-side config, like highlight color)
