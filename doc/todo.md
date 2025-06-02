@@ -1,3 +1,4 @@
+- [x] 0 option to turn it off
 - [ ] 0 cannot change hotkey! & cannot block changing weapon!
   - for now, simply let the user remove original keybinding of 1234
 

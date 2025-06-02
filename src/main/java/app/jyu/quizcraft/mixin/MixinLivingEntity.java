@@ -14,6 +14,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.particle.ParticleTypes;
 import net.minecraft.registry.tag.DamageTypeTags;
 import net.minecraft.registry.tag.EntityTypeTags;
+import app.jyu.quizcraft.ServerConfig;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundCategory;
@@ -50,6 +51,7 @@ public class MixinLivingEntity {
       cancellable = true
     )
     public void onInvokingBlockedByShieldInDamage(DamageSource source, float amount, CallbackInfoReturnable<Boolean> cir) {
+        if (!ServerConfig.isQuizEnabled()) {return;}
         LivingEntity self = (LivingEntity)(Object)this;
         QuizCraft.onDamageStart(self, source, amount, cir);
         // monkey patch: cancel the subsequent damage() procedure if blocked by shield

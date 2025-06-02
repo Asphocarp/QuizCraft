@@ -468,6 +468,7 @@ public class QuizCraft implements ModInitializer {
     
     // Server-side event handler for block breaking - blocks the break and creates a ping (ONLY FOR ORES)
     private static boolean onBlockBreak(World world, net.minecraft.entity.player.PlayerEntity player, BlockPos pos, BlockState state, net.minecraft.block.entity.BlockEntity blockEntity) {
+        if (!ServerConfig.isQuizEnabled()) {return true;}
         if (world.isClient() || !(player instanceof ServerPlayerEntity serverPlayer)) {
             return true;
         }
